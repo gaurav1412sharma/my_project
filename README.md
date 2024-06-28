@@ -1,1 +1,1 @@
-# my_project
+# Django_react_project
