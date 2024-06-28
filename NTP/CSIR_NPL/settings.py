@@ -39,7 +39,7 @@ MIDDLEWARE = [
     
 ]
 
-CORS_ALLOW_ALL_ORIGINS = False  # Set to False in production and specify allowed origins.
+CORS_ALLOW_ALL_ORIGINS = True  # Set to False in production and specify allowed origins.
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
