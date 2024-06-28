@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: my_project
+    name: csir_npl_ntp_data_visualization_and_monitoring
     env: python
     plan: free
     rootDir: my_project  # Ensure this points to the correct directory
