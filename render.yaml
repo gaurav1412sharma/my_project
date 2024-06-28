@@ -1,8 +1,9 @@
 services:
   - type: web
-    name: django-backend
+    name: my_project
     env: python
     plan: free
+    rootDir: my_project  # Ensure this points to the correct directory
     buildCommand: "pip install -r requirements.txt"
     startCommand: "uvicorn CSIR_NPL.asgi:application --host 0.0.0.0 --port $PORT"
     envVars:
