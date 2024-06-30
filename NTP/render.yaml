@@ -1,14 +1,29 @@
 services:
   - type: web
-    name: csir_npl_ntp_data_visualization_and_monitoring
+    name: csir-npl-django-backend
     env: python
-    plan: free
-    rootDir: "/opt/render/project/src/my_project" # Ensure this points to the correct directory
     buildCommand: "pip install -r requirements.txt"
-    startCommand: "uvicorn CSIR_NPL.asgi:application --host 0.0.0.0 --port $PORT"
+    startCommand: uvicorn CSIR_NPL.wsgi:application --bind 0.0.0.0:$PORT
     envVars:
-      - key: DJANGO_SETTINGS_MODULE
-        value: "CSIR_NPL.settings"
-      - key: DEBUG
-        value: "False"
-      # Add other environment variables as needed
+      - key: DATABASE_URL
+        value: <your-database-url>
+      - key: DJANGO_SECRET_KEY
+        value: "django-insecure--n0$aj!k-@u7+p6$#2wwol&kdgr=^4@+p8&qsbr-a_p^=l9%12"
+      - key: DJANGO_DEBUG
+        value: false
+      - key: REACT_APP_API_URL
+        value: "https://csir-npl-django-backend.onrender.com"
+    plan: starter
+    autoDeploy: true
+
+  - type: web
+    name: csir-npl-react-frontend
+    env: node
+    buildCommand: npm run build
+    startCommand: serve -s build
+    staticPublishPath: build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: "https://csir-npl-django-backend.onrender.com"
+    plan: starter
+    autoDeploy: true

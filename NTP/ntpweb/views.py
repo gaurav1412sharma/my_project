@@ -1,8 +1,7 @@
 import os
 import logging
 from django.middleware.csrf import get_token
-from django.views.decorators.csrf import csrf_exempt
-#from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
@@ -15,6 +14,7 @@ import json
 # Configure logging
 logger = logging.getLogger(__name__)
 
+@ensure_csrf_cookie
 def csrf_token_view(request):
     csrf_token = get_token(request)
     return JsonResponse({'csrf_token': csrf_token})
@@ -65,16 +65,6 @@ def generate_graphs():
         'processing_times': processing_time2
     }
 
-# def ntp_data(request):
-#     template_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'build', 'index.html')
-#     logger.debug(f"Serving index.html from: {template_path}")
-#     try:
-#         with open(template_path, 'r') as file:
-#           return HttpResponse(file.read(), content_type= 'text/html')
-#     except Exception as e:
-#         logger.error(f"Error rendering index.html: {e}", exc_info=True)
-#         return HttpResponse(f"Error: {e}", status=500)
-
 def dynamic_graph(request):
     data = generate_graphs()
     return JsonResponse(data)
@@ -85,8 +75,8 @@ class SearchView(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        # Handle GET requests here if necessary
-        return JsonResponse({"message": "GET request handled by SearchView"})
+        csrf_token = get_token(request)
+        return JsonResponse({"csrf_token": csrf_token})
 
     def post(self, request, *args, **kwargs):
         try:
@@ -130,9 +120,6 @@ class SearchView(View):
         except Exception as e:
             logger.error(f"An error occurred: {e}", exc_info=True)
             return JsonResponse({"error": "Internal Server Error"}, status=500)
-    def get(self, request, *args, kwargs):
-        csrf_token = get_token(request)
-        return JsonResponse({"csrf_token": csrf_token})
 
 def get_ntp_time(request):
     ntp_servers = [
